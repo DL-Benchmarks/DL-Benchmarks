@@ -1,6 +1,6 @@
 # DL-benchmarks
 
-This is the companion code for DL benchmarking study reported in the paper titled as *Comparative Study of Deep Learning Software Frameworks* authored by *Soheil Bahrampour, Naveen Ramakrishnan, Lukas Schott, and Mohak Shah*. The paper can be found here http://arxiv.org/abs/1511.06435. The code allows the users to reproduce and extend the results reported in the study. More specifically, the code provides timings of forward run and forward+backward (gradient computation) run of several deep learning architecture using Caffe, Neon, TensorFlow, Theano, and Torch. The deep learning architectures used includes LeNet, AlexNet, LSTM, and a stacked AutoEncoder. Please cite the above paper when reporting, reproducing or extending the results.
+This is the companion code for DL benchmarking study reported in the paper *Comparative Study of Deep Learning Software Frameworks* by *Soheil Bahrampour, Naveen Ramakrishnan, Lukas Schott, and Mohak Shah*. The paper can be found here http://arxiv.org/abs/1511.06435. The code allows the users to reproduce and extend the results reported in the study. The code provides timings of forward run and forward+backward (gradient computation) run of several deep learning architecture using Caffe, Neon, TensorFlow, Theano, and Torch. The deep learning architectures used includes LeNet, AlexNet, LSTM, and a stacked AutoEncoder. Please cite the above paper when reporting, reproducing or extending the results.
 
 
 ## Run the benchmarks
