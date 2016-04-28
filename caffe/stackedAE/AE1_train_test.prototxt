@@ -1,0 +1,105 @@
+name: "AE1"
+layer {
+  type: "DummyData"
+  name: "data"
+  top: "data"
+  include {
+    phase: TRAIN
+  }
+  dummy_data_param {
+    shape: { dim: 64 dim: 1 dim: 28 dim: 28}
+    data_filler: { type: "constant"
+                   value: 1
+                   }
+  }
+}
+layer {
+  type: "DummyData"
+  name: "label"
+  top: "label"
+  include {
+    phase: TRAIN
+  }
+  dummy_data_param {
+    shape: { dim: 64}
+    data_filler: { type: "constant"
+                   value: 0 
+                   }
+  }
+}
+layer {
+  name: "flatdata"
+  type: "Flatten"
+  bottom: "data"
+  top: "flatdata"
+}
+layer {
+  name: "encode1"
+  type: "InnerProduct"
+  bottom: "data"
+  top: "encode1"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 1
+    decay_mult: 0
+  }
+  inner_product_param {
+    num_output: 800
+    weight_filler {
+      type: "gaussian"
+      std: 1
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "encode1neuron"
+  type: "Sigmoid"
+  bottom: "encode1"
+  top: "encode1neuron"
+}
+layer {
+  name: "decode1"
+  type: "InnerProduct"
+  bottom: "encode1neuron"
+  top: "decode1"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 1
+    decay_mult: 0
+  }
+  inner_product_param {
+    num_output: 784
+    weight_filler {
+      type: "gaussian"
+      std: 1
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "decode1neuron"
+  type: "Sigmoid"
+  bottom: "decode1"
+  top: "decode1neuron"
+}
+layer {
+  name: "loss"
+  type: "EuclideanLoss"
+  bottom: "decode1neuron"
+  bottom: "flatdata"
+  top: "l2_error"
+  loss_weight: 1
+}

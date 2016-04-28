@@ -1,0 +1,156 @@
+name: "SDA"
+layer {
+  type: "DummyData"
+  name: "data"
+  top: "data"
+  include {
+    phase: TRAIN
+  }
+  dummy_data_param {
+    shape: { dim: 64 dim: 1 dim: 28 dim: 28}
+    data_filler: { type: "constant"
+                   value: 1
+                   }
+  }
+}
+layer {
+  type: "DummyData"
+  name: "label"
+  top: "label"
+  include {
+    phase: TRAIN
+  }
+  dummy_data_param {
+    shape: { dim: 64}
+    data_filler: { type: "constant"
+                   value: 0 
+                   }
+  }
+}
+layer {
+  name: "flatdata"
+  type: "Flatten"
+  bottom: "data"
+  top: "flatdata"
+}
+layer {
+  name: "encode1"
+  type: "InnerProduct"
+  bottom: "data"
+  top: "encode1"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 1
+    decay_mult: 0
+  }
+  inner_product_param {
+    num_output: 400
+    weight_filler {
+      type: "gaussian"
+      std: 1
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "encode1neuron"
+  type: "Sigmoid"
+  bottom: "encode1"
+  top: "encode1neuron"
+}
+layer {
+  name: "encode2"
+  type: "InnerProduct"
+  bottom: "encode1neuron"
+  top: "encode2"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 1
+    decay_mult: 0
+  }
+  inner_product_param {
+    num_output: 200
+    weight_filler {
+      type: "gaussian"
+      std: 1
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "encode2neuron"
+  type: "Sigmoid"
+  bottom: "encode2"
+  top: "encode2neuron"
+}
+layer {
+  name: "encode3"
+  type: "InnerProduct"
+  bottom: "encode2neuron"
+  top: "encode3"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 1
+    decay_mult: 0
+  }
+  inner_product_param {
+    num_output: 100
+    weight_filler {
+      type: "gaussian"
+      std: 1
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "encode3neuron"
+  type: "Sigmoid"
+  bottom: "encode3"
+  top: "encode3neuron"
+}
+layer {
+  name: "classifier"
+  type: "InnerProduct"
+  bottom: "encode3neuron"
+  top: "classifier"
+  param {
+    lr_mult: 1
+  }
+  param {
+    lr_mult: 2
+  }
+  inner_product_param {
+    num_output: 10
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+  }
+}
+layer {
+  name: "loss"
+  type: "SoftmaxWithLoss"
+  bottom: "classifier"
+  bottom: "label"
+  top: "loss"
+}

@@ -1,0 +1,167 @@
+name: "AE3"
+layer {
+  type: "DummyData"
+  name: "data"
+  top: "data"
+  include {
+    phase: TRAIN
+  }
+  dummy_data_param {
+    shape: { dim: 64 dim: 1 dim: 28 dim: 28}
+    data_filler: { type: "constant"
+                   value: 1
+                   }
+  }
+}
+layer {
+  type: "DummyData"
+  name: "label"
+  top: "label"
+  include {
+    phase: TRAIN
+  }
+  dummy_data_param {
+    shape: { dim: 64}
+    data_filler: { type: "constant"
+                   value: 0 
+                   }
+  }
+}
+layer {
+  name: "flatdata"
+  type: "Flatten"
+  bottom: "data"
+  top: "flatdata"
+}
+layer {
+  name: "encode1"
+  type: "InnerProduct"
+  bottom: "data"
+  top: "encode1"
+  param {
+    lr_mult: 0
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 0
+    decay_mult: 0
+  }
+  inner_product_param {
+    num_output: 400
+    weight_filler {
+      type: "gaussian"
+      std: 1
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "encode1neuron"
+  type: "Sigmoid"
+  bottom: "encode1"
+  top: "encode1neuron"
+}
+layer {
+  name: "encode2"
+  type: "InnerProduct"
+  bottom: "encode1neuron"
+  top: "encode2"
+  param {
+    lr_mult: 0
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 0
+    decay_mult: 0
+  }
+  inner_product_param {
+    num_output: 200
+    weight_filler {
+      type: "gaussian"
+      std: 1
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "encode2neuron"
+  type: "Sigmoid"
+  bottom: "encode2"
+  top: "encode2neuron"
+}
+layer {
+  name: "encode3"
+  type: "InnerProduct"
+  bottom: "encode2neuron"
+  top: "encode3"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 1
+    decay_mult: 0
+  }
+  inner_product_param {
+    num_output: 100
+    weight_filler {
+      type: "gaussian"
+      std: 1
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "encode3neuron"
+  type: "Sigmoid"
+  bottom: "encode3"
+  top: "encode3neuron"
+}
+layer {
+  name: "decode3"
+  type: "InnerProduct"
+  bottom: "encode3neuron"
+  top: "decode3"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 1
+    decay_mult: 0
+  }
+  inner_product_param {
+    num_output: 200
+    weight_filler {
+      type: "gaussian"
+      std: 1
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "decode3neuron"
+  type: "Sigmoid"
+  bottom: "decode3"
+  top: "decode3neuron"
+}
+layer {
+  name: "loss"
+  type: "EuclideanLoss"
+  bottom: "decode3neuron"
+  bottom: "encode2neuron"
+  top: "l2_error"
+  loss_weight: 1
+}
