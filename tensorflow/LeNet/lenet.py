@@ -106,9 +106,10 @@ def time_tensorflow_run(session, target, info_string, config):
     processing_times = np.zeros(config.num_timing_iters)
     if not isinstance(target, list):
         target = [target]
+    target_op = tf.group(*target)
     for i in xrange(config.num_timing_iters + config.num_warmup_iters):
         start_time = time.time()
-        _ = session.run(tf.group(*target))
+        _ = session.run(target_op)
         duration = time.time() - start_time
         if i >= config.num_warmup_iters:
             processing_times[i-config.num_warmup_iters] = duration

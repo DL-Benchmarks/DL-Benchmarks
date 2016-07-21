@@ -121,9 +121,10 @@ def time_tensorflow_run(session, target, info_string, config):
     processing_times = np.zeros(config.num_timing_iters)
     if not isinstance(target, list):
         target = [target]
+    group_op = tf.group(*target)
     for i in xrange(config.num_timing_iters + config.num_warmup_iters):
         start_time = time.time()
-        _ = session.run(tf.group(*target))
+        _ = session.run(group_op)
         duration = time.time() - start_time
         if i >= config.num_warmup_iters:
             processing_times[i-config.num_warmup_iters] = duration
@@ -164,7 +165,9 @@ def time_alexnet():
             gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=
                                         config.gpu_memory_fraction)
             device_config = tf.ConfigProto(gpu_options=gpu_options,
-                                           device_count={'GPU': 1})
+                                           device_count={'GPU': 1}, 
+					   #log_device_placement=True
+					   )
         print device_config
         sess = tf.Session(config=device_config)
         sess.run(init)
